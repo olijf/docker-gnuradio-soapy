@@ -1,7 +1,7 @@
 # Gnuradio + soapy docker
-This repo contains a [Dockerfile] that builds a Gnuradio image with SoapySDR support.
+This repo contains a [Dockerfile](Dockerfile) that builds a Gnuradio image with SoapySDR support.
 Included is a sample script `radio.py` that can sniff Zigbee traffic. To check the source code of the script open the grc in gnu radio companion.
-[ieee802_15_4_oqpsk_ph.py] is provided by the excelent [gr-ieee802-15-4](https://github.com/bastibl/gr-ieee802-15-4) and is used to decode the Zigbee traffic (its under examples).
+[ieee802_15_4_oqpsk_ph.py](ieee802_15_4_oqpsk_phy.py) is provided by the excelent [gr-ieee802-15-4](https://github.com/bastibl/gr-ieee802-15-4) and is used to decode the Zigbee traffic (its under examples).
 
 ## Usage
 ### Build
