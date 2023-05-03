@@ -72,6 +72,12 @@ RUN SoapySDRUtil --info
 WORKDIR /app
 COPY radio.py radio.py
 COPY ieee802_15_4_oqpsk_phy.py ieee802_15_4_oqpsk_phy.py 
-CMD ["/bin/bash"]
-#CMD ["./radio.py"]
+#CMD ["/bin/bash"]
+#write output.pcap to a folder accesible from host
+RUN mkdir /docker-volume
+CMD ["./radio.py", "--filename", "/docker-volume/output.pcap"]
+#todo persistency of output.pcap mount docker volume
+
+
+
 
