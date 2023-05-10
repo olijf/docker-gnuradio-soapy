@@ -18,7 +18,7 @@ Will drop you in a shell from which you can run the `radio.py` script.
 
 If you want to use a different driver you can pass the `--device` flag to the script:
 ```
-./radio.py --device=soapysdr --filename=~/persistent/output.pcap
+./radio.py --device=plutosdr --filename=~/persistent/output.pcap
 ```
 
 [`run.sh`](run.sh) will forward your display so you can run the `gnuradio-companion` app to open the grc files.
