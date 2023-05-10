@@ -1,7 +1,7 @@
 # Gnuradio + soapy docker
-This repo contains a [Dockerfile](Dockerfile) that builds a Gnuradio image with SoapySDR support.
-Included is a sample script `radio.py` that can sniff Zigbee traffic. To check the source code of the script open the grc in gnu radio companion.
-[ieee802_15_4_oqpsk_ph.py](ieee802_15_4_oqpsk_phy.py) is provided by the excelent [gr-ieee802-15-4](https://github.com/bastibl/gr-ieee802-15-4) and is used to decode the Zigbee traffic (its under examples).
+This repo contains a [`Dockerfile`](Dockerfile) that builds a Gnuradio image with SoapySDR support.
+Included is a sample flowgraph [`radio.grc`](radio.grc) that can sniff Zigbee traffic. To check the source code of the script open the grc in gnu radio companion.
+the hier block [ieee802_15_4_oqpsk_ph.py](https://github.com/bastibl/gr-ieee802-15-4/blob/maint-3.10/examples/ieee802_15_4_OQPSK_PHY.grc) is provided by the excelent [gr-ieee802-15-4](https://github.com/bastibl/gr-ieee802-15-4) and is used to decode the Zigbee traffic (its under examples).
 
 ## Usage
 ### Build
@@ -12,14 +12,21 @@ docker build -t gnuradio-soapy .
 ### Run
 To run the sample script:
 ```bash
-docker run --rm -it gnuradio-soapy
+./run.sh
 ```
-Using the default params in the `radio.py`
+Will drop you in a shell from which you can run the `radio.py` script.
 
 If you want to use a different driver you can pass the `--device` flag to the script:
-```bash
-docker run --rm -it gnuradio-soapy ./radio.py --device=hackrf
 ```
+./radio.py --device=soapysdr --filename=~/persistent/output.pcap
+```
+
+[`run.sh`](run.sh) will forward your display so you can run the `gnuradio-companion` app to open the grc files.
+
+`run.sh` also provides a volume mount to the `persistent` folder in the home dir. This is where the `radio.py` script will store the pcap file.
+
+You will have to run the docker container priviliged mode if you want usb access (needed for hackrf).
+Adjust the `run.sh` script accordingly. Other sdr's like the plutosdr/usrp can be used without priviliged mode if you provide the right device string in using the `--arguments` flag.
 
 #### Included drivers
 ```bash
@@ -85,12 +92,15 @@ optional arguments:
 
 If you want to open the pcap file in wireshark you need to get it out of your container. You can do this by mounting a volume:
 ```bash
-docker run --rm -it --privileged -v /tmp:/docker-volume gnuradio-soapy
+docker run --rm -it --privileged -v $(pwd)/persistent:/home/gnuradio/persistent gnuradio-soapy
 ```
+[`entrypoint.sh`](entrypoint.sh) will take care setting the right permissions on the volume.
+use the `--filename` flag to set the filename of the pcap file to somewhere in the `persistent` volume.
 
 
 ## Todo
-- [ ] Add persistence to the container (output.pcap)
+- [x] Add persistence to the container (output.pcap) persistence has been added, there is a volume mounted `persistent` in the home dir.
 - [ ] Split up the repo in the radio.py script and dockerfile
-- [ ] Figure out a way to build the ieee802_15_4_OQPSK_PHY.grc from the gr-ieee802-15-4 repo in the dockerfile. Gnuradio doesn't have the `--compile` flag anymore. Maybe we can use the `grcc` command? and make it part of the build process?
+- [x] Figure out a way to build the ieee802_15_4_OQPSK_PHY.grc from the gr-ieee802-15-4 repo in the dockerfile. Gnuradio doesn't have the `--compile` flag anymore. Maybe we can use the `grcc` command? and make it part of the build process? ieee module and radio.py are now built using the grcc command and have thus been removed from the repo.
+
 
