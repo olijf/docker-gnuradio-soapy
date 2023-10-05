@@ -1,16 +1,9 @@
-FROM ubuntu:focal
+FROM debian:bookworm
 ARG DEBIAN_FRONTEND=noninteractive
 
-#PPA
-RUN apt update
-RUN apt install -y software-properties-common
-
 #Essentials
-RUN apt install -y build-essential git cmake
-
-#GNU Radio
-RUN add-apt-repository -y ppa:gnuradio/gnuradio-releases
 RUN apt update
+RUN apt install -y build-essential git cmake
 RUN apt install -y gnuradio python3-packaging
 
 #gr-foo for the wireshark module
