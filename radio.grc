@@ -33,6 +33,18 @@ options:
     state: enabled
 
 blocks:
+- name: bandwidth
+  id: variable
+  parameters:
+    comment: ''
+    value: 20e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [264, 16.0]
+    rotation: 0
+    state: true
 - name: freq
   id: variable
   parameters:
@@ -69,6 +81,23 @@ blocks:
     coordinate: [184, 12]
     rotation: 0
     state: enabled
+- name: antenna_source
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ''
+    short_id: ''
+    type: str
+    value: A_BALANCED
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 40.0]
+    rotation: 0
+    state: true
 - name: arguments
   id: parameter
   parameters:
@@ -78,7 +107,7 @@ blocks:
     label: ''
     short_id: ''
     type: str
-    value: ip:192.168.2.1
+    value: uri=ip:192.168.2.1
   states:
     bus_sink: false
     bus_source: false
@@ -192,7 +221,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    bandwidth: '20000000'
+    bandwidth: int(bandwidth)
     bbdc: 'True'
     buffer_size: '32768'
     comment: ''
@@ -242,11 +271,11 @@ blocks:
     agc0: 'True'
     agc1: 'False'
     alias: ''
-    antenna0: A_BALANCED
+    antenna0: antenna_source
     antenna1: ''
-    bandwidth0: '0'
+    bandwidth0: int(bandwidth)
     bandwidth1: '0'
-    center_freq0: freq
+    center_freq0: int(freq)
     center_freq1: '0'
     comment: ''
     dc_offset0: '0'
@@ -277,14 +306,14 @@ blocks:
     bus_structure: null
     coordinate: [248, 432.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: soapy_plutosdr_source_0
   id: soapy_plutosdr_source
   parameters:
     affinity: ''
     agc: 'True'
     alias: ''
-    bandwidth: '20000000'
+    bandwidth: int(bandwidth)
     center_freq: freq
     comment: ''
     dev_args: ''
@@ -299,7 +328,7 @@ blocks:
     bus_structure: null
     coordinate: [264, 344.0]
     rotation: 0
-    state: true
+    state: disabled
 
 connections:
 - [foo_wireshark_connector_0, '0', blocks_file_sink_0, '0']
