@@ -1,2 +1,2 @@
 #!/bin/bash
-docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --device /dev/snd -v $(pwd)/persistent:/home/gnuradio/persistent --group-add=audio -it --rm gnuradio-soapy /bin/bash
+docker run --net=host -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --device /dev/snd -v $(pwd)/persistent:/home/gnuradio/persistent --group-add=audio -it --rm gnuradio-soapy /bin/bash

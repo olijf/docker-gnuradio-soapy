@@ -88,8 +88,8 @@ USER root
 #fix permissions
 RUN find /home/gnuradio -type d,f -exec chown -R gnuradio:gnuradio {} +
 
-USER gnuradio
-ENTRYPOINT ["/bin/sh", "entrypoint.sh"]
+#USER gnuradio
+ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
 
 CMD ["./radio.py", "--filename", "/home/gnuradio/persistent/output.pcap"]
 

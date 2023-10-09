@@ -21,7 +21,7 @@ If you want to use a different driver you can pass the `--device` flag to the sc
 ./radio.py --device=plutosdr --filename=~/persistent/output.pcap
 ```
 
-[`run.sh`](run.sh) will forward your display so you can run the `gnuradio-companion` app to open the grc files.
+~~[`run.sh`](run.sh) will forward your display so you can run the `gnuradio-companion` app to open the grc files.~~ This needs fixing and is not secure at the moment (work around is on the host `xhost +` and then `run.sh`, **this disables all x11 security checks**)
 
 `run.sh` also provides a volume mount to the `persistent` folder in the home dir. This is where the `radio.py` script will store the pcap file.
 
@@ -68,7 +68,7 @@ Available converters...
  -    U8 -> [F32, S16, S8]
 ```
 
-If you want to use the docker container with an SDR that does not provide a network interface you should run the docker container in priviliged mode:
+If you want to use the docker container with an SDR that does not provide a network interface you should run the docker container in priviliged mode + mount your `/dev/` folder/device into the container:
 ```bash
 docker run --rm -it --privileged gnuradio-soapy
 ```
@@ -76,26 +76,45 @@ docker run --rm -it --privileged gnuradio-soapy
 ## Zigbee sniffing
 ```bash
 ./radio.py --help
-usage: radio.py [-h] [--arguments ARGUMENTS] [--channel CHANNEL] [--device DEVICE] [--filename FILENAME]
+usage: radio.py [-h] [--antenna-source ANTENNA_SOURCE] [--arguments ARGUMENTS] [--channel CHANNEL] [--device DEVICE] [--pcap-filename PCAP_FILENAME]
 
 IEEE 802.15.4 Radio RxFlow
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
+  --antenna-source ANTENNA_SOURCE
+                        Set antenna_source [default='A_BALANCED']
   --arguments ARGUMENTS
-                        Set arguments [default='uri=ip:192.168.2.1']
+                        Set arguments [default='uri=ip:192.168.2.1'] # the ip of the plutosdr.
   --channel CHANNEL     Set channel [default=11]
   --device DEVICE       Set device [default='plutosdr']
-  --filename FILENAME   Set filename [default='/tmp/sensors.pcap']
+  --pcap-filename PCAP_FILENAME
+                        Set pcap_filename [default='./persistent/sensors.pcap']
+
 
 ```
+
+## Figure out device parameters.
+This project makes use of the SoapySDR abstraction layer. This way you do not need to rebuild/fidget with the flowgraph for every SDR you want to use.
+
+The only thing that you need to make sure is that you have set up your parameters correctly. 
+1. On the host machine if you install SoapySDR you can use the `SoapySDRUtil --info` command to see which drivers are available. 
+2. Using the `SoapySDRUtil --find="driver=plutosdr"` command you can see the listed devices for that specific driver (make sure to replace it with the driver you want to use). **Note down the uri**.
+3. Semilarly you can use the `SoapySDRUtil --probe="driver=plutosdr"` command to see the parameters that you can set for that specific driver. **Note down the Antennas**.
+4. Now from within the docker container you can run the sniffer using driver=plutosdr,uri=ip:192.168.2.1" 
+    Like so: `./radio.py --device plutosdr --arguments uri=ip:192.168.2.1 --antenna-source A_BALANCED`
+
+
+
 
 If you want to open the pcap file in wireshark you need to get it out of your container. You can do this by mounting a volume:
 ```bash
-docker run --rm -it --privileged -v $(pwd)/persistent:/home/gnuradio/persistent gnuradio-soapy
+docker run --rm -it -v $(pwd)/persistent:/home/gnuradio/persistent gnuradio-soapy
 ```
+Using the included `run.sh` script will do this for you.
+
 [`entrypoint.sh`](entrypoint.sh) will take care setting the right permissions on the volume.
-use the `--filename` flag to set the filename of the pcap file to somewhere in the `persistent` volume.
+use the `--pcap-filename` flag to set the filename of the pcap file to somewhere in the `persistent` volume, default is `./persistent/sensors.pcap`.
 
 
 ## Todo
