@@ -11,7 +11,7 @@ options:
     gen_linking: dynamic
     generate_options: no_gui
     hier_block_src_path: '.:'
-    id: RxFlow
+    id: radio
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -217,7 +217,7 @@ blocks:
     bus_structure: null
     coordinate: [40, 220.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pcap_filename
   id: parameter
   parameters:
@@ -275,9 +275,31 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [272, 360.0]
+    coordinate: [248, 432.0]
     rotation: 0
     state: disabled
+- name: soapy_plutosdr_source_0
+  id: soapy_plutosdr_source
+  parameters:
+    affinity: ''
+    agc: 'True'
+    alias: ''
+    bandwidth: '20000000'
+    center_freq: freq
+    comment: ''
+    dev_args: ''
+    gain: '20'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: int(samp_rate)
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [264, 344.0]
+    rotation: 0
+    state: true
 
 connections:
 - [foo_wireshark_connector_0, '0', blocks_file_sink_0, '0']
@@ -285,6 +307,7 @@ connections:
 - [ieee802_15_4_oqpsk_phy_0, rxout, foo_wireshark_connector_0, in]
 - [iio_pluto_source_0, '0', ieee802_15_4_oqpsk_phy_0, '0']
 - [soapy_custom_source_0, '0', ieee802_15_4_oqpsk_phy_0, '0']
+- [soapy_plutosdr_source_0, '0', ieee802_15_4_oqpsk_phy_0, '0']
 
 metadata:
   file_format: 1
