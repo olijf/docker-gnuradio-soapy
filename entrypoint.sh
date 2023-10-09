@@ -16,8 +16,8 @@ usermod --uid "$HOST_UID" gnuradio
 
 # Drop privileges and execute next container command, or 'bash' if not specified.
 if [[ $# -gt 0 ]]; then
-    exec sudo -u gnuradio -- "$@"
+    exec sudo --preserve-env=TERM -H -u gnuradio -- "$@"
 else
-    exec sudo -u gnuradio -- bash
+    exec sudo --preserve-env=TERM -H -u gnuradio -- bash
 fi
 exec "$@"

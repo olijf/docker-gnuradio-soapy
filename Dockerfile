@@ -88,6 +88,7 @@ USER root
 #fix permissions
 RUN find /home/gnuradio -type d,f -exec chown -R gnuradio:gnuradio {} +
 
+ENV TERM xterm-256color
 #USER gnuradio
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
 
